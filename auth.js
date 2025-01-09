@@ -1,47 +1,25 @@
-const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
+const nodemailer = require("nodemailer");
 
-const OAuth2 = google.auth.OAuth2;
-
-// OAuth2 Client
-const oauth2Client = new OAuth2(
-  "CLIENT_ID",     // Client ID from Google Developer Console
-  "CLIENT_SECRET", // Client Secret
-  "https://developers.google.com/oauthplayground" // Redirect URL
-);
-
-oauth2Client.setCredentials({
-  refresh_token: "REFRESH_TOKEN"
-});
-
-// Get access token
-const accessToken = oauth2Client.getAccessToken();
-
-// Create transporter
-let transporter = nodemailer.createTransport({
-  service: 'gmail',
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com", 
+  port: 587, 
+  secure: false, 
   auth: {
-    type: 'OAuth2',
-    user: 'sunilnumetry07@gmail.com',
-    clientId: 'CLIENT_ID',
-    clientSecret: 'CLIENT_SECRET',
-    refreshToken: 'REFRESH_TOKEN',
-    accessToken: accessToken
-  }
+    user: "sunilnumetry07@gmail.com", // Your Gmail address
+    pass: "wfxtppezeyjhjhmw", 
+  },
 });
 
-// Mail options
-let mailOptions = {
-  from: '"Sender Name" <sunilnumetry07@gmail.com>',
-  to: 'shahsunilkumar373@gmail.com',
-  subject: 'Hello OAuth2 ✔',
-  text: 'Hello with OAuth2 authentication',
-};
+async function main() {
+  const info = await transporter.sendMail({
+    from: '"Sunil Kumar 👻" <sunilnumetry07@gmail.com>', // sender address
+    to: "shahsunilkumar373@gmail.com, shahsurajkumar373@gmail.com", // list of receivers
+    subject: "Hello this code send for the nodejsmailer ✔", // Subject line
+    text: "Hello world?", // plain text body
+    html: "<b>Hello Sunil this side to send email </b>", // html body
+  });
 
-// Send email
-transporter.sendMail(mailOptions, (error, info) => {
-  if (error) {
-    return console.log(error);
-  }
-  console.log('Message sent: %s', info.messageId);
-});
+  console.log("Message sent: %s", info.messageId);
+}
+
+main().catch(console.error);
